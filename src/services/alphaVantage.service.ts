@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {StockApi} from '../interfaces/stockApi.interface';
 
-type AlphaVantageConfig = {
+export type AlphaVantageConfig = {
   url: string;
   path: string;
   apikey: string;

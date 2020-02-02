@@ -35,15 +35,14 @@ describe('AlphaVantageService', () => {
       });
     });
 
-    it(
-      'should request global quote function with specified company and api key',
-      async () => {
-        scope = interceptor.reply(200, {});
+    it('should request global quote function with specified ' +
+      'company and api key', async () => {
+      scope = interceptor.reply(200, {});
 
-        await alphaVantageService.getCurrentStockValue('WIX');
+      await alphaVantageService.getCurrentStockValue('WIX');
 
-        expect(scope.isDone()).toBeTruthy();
-      });
+      expect(scope.isDone()).toBeTruthy();
+    });
 
     it('should return price from reply as number', async () => {
       const testPrice = '100.00';
@@ -132,17 +131,16 @@ describe('AlphaVantageService', () => {
         expect(result).toBeUndefined();
       });
 
-    it(
-      'should return undefined when best matches\'s first element does not have name field',
-      async () => {
-        scope = interceptor.reply(200, {
-          bestMatches: [{}],
-        });
-
-        const result = await alphaVantageService.getFullCompanyName('WIX');
-
-        expect(result).toBeUndefined();
+    it('should return undefined when best matches\'s first ' +
+      'element does not have name field', async () => {
+      scope = interceptor.reply(200, {
+        bestMatches: [{}],
       });
+
+      const result = await alphaVantageService.getFullCompanyName('WIX');
+
+      expect(result).toBeUndefined();
+    });
 
   });
 

@@ -33,8 +33,8 @@ describe('SimpleStockService', () => {
 
         await simpleStockService.getCurrentStock('WIX');
 
-        expect(() => sinon.assert.calledOnce(stub)).toBeTruthy();
-        expect(() => sinon.assert.calledWith(stub, 'WIX')).toBeTruthy();
+        sinon.assert.calledOnce(stub);
+        sinon.assert.calledWith(stub, 'WIX');
       });
 
     it('should make one call to get current stock value with company parameter',
@@ -43,8 +43,8 @@ describe('SimpleStockService', () => {
 
         await simpleStockService.getCurrentStock('WIX');
 
-        expect(() => sinon.assert.calledOnce(stub)).toBeTruthy();
-        expect(() => sinon.assert.calledWith(stub, 'WIX')).toBeTruthy();
+        sinon.assert.calledOnce(stub);
+        sinon.assert.calledWith(stub, 'WIX');
       });
 
     it('should return stock for a valid company', async () => {

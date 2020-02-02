@@ -40,8 +40,8 @@ describe('CachedStockService', () => {
 
       await cachedStockService.getCurrentStock('WIX');
 
-      expect(() => sinon.assert.calledOnce(stub)).toBeTruthy();
-      expect(() => sinon.assert.calledWith(stub, 'WIX')).toBeTruthy();
+      sinon.assert.calledOnce(stub);
+      sinon.assert.calledWith(stub, 'WIX');
     });
 
     it('should return previously stored stock entry', async () => {
@@ -52,7 +52,7 @@ describe('CachedStockService', () => {
 
       const result = await cachedStockService.getCurrentStock('WIX');
 
-      expect(() => sinon.assert.calledOnce(stub)).toBeTruthy();
+      sinon.assert.calledOnce(stub);
       expect(result).toEqual(expectedStock);
     });
 
@@ -64,8 +64,8 @@ describe('CachedStockService', () => {
 
       await cachedStockService.getCurrentStock('WIX');
 
-      expect(() => sinon.assert.calledOnce(stub)).toBeTruthy();
-      expect(() => sinon.assert.calledWith(stub, 'WIX')).toBeTruthy();
+      sinon.assert.calledOnce(stub);
+      sinon.assert.calledWith(stub, 'WIX');
     });
 
     it('should set new stock entry when no previously stored present',
@@ -78,9 +78,8 @@ describe('CachedStockService', () => {
 
         await cachedStockService.getCurrentStock('WIX');
 
-        expect(() => sinon.assert.calledOnce(stub)).toBeTruthy();
-        expect(() => sinon.assert.calledWith(stub, 'WIX', expectedStock)).
-          toBeTruthy();
+        sinon.assert.calledOnce(stub);
+        sinon.assert.calledWith(stub, 'WIX', expectedStock);
       });
 
     it('should return newly stored stock entry', async () => {
@@ -104,21 +103,20 @@ describe('CachedStockService', () => {
 
         await cachedStockService.getCurrentStock('WIX');
 
-        expect(() => sinon.assert.notCalled(stub)).toBeTruthy();
+        sinon.assert.notCalled(stub);
       });
 
-    it(
-      'should return undefined when got undefined stock when no previously stored present',
-      async () => {
-        sandbox.stub(cacheServiceMock, 'has').withArgs('WIX').returns(false);
-        sandbox.stub(stockServiceMock, 'getCurrentStock').
-          withArgs('WIX').
-          returns(Promise.resolve(undefined));
+    it('should return undefined when got undefined stock when ' +
+      'no previously stored present', async () => {
+      sandbox.stub(cacheServiceMock, 'has').withArgs('WIX').returns(false);
+      sandbox.stub(stockServiceMock, 'getCurrentStock').
+        withArgs('WIX').
+        returns(Promise.resolve(undefined));
 
-        const result = await cachedStockService.getCurrentStock('WIX');
+      const result = await cachedStockService.getCurrentStock('WIX');
 
-        expect(result).toBeUndefined();
-      });
+      expect(result).toBeUndefined();
+    });
 
   });
 
