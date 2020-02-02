@@ -1,8 +1,5 @@
-import app from './app';
+import Application from "./app";
 
-const hostname = process.env.HOSTNAME || process.argv[2] || 'localhost';
-const port = Number(process.env.PORT) || Number(process.argv[3]) || 3030;
-
-app.listen(port, hostname, () => {
+new Application().start((hostname: string, port: number) => {
     console.log(`express app started listening on ${hostname}:${port}`);
 });

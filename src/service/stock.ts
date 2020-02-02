@@ -2,51 +2,45 @@ import LRUCache from 'lru-cache';
 import * as yup from 'yup';
 import axios from 'axios';
 
-type Stock = {
-    name: string;
-    price: number;
-};
+import config from '../config';
+import {NotFoundError, ValidationError} from '../typings/errors';
+import {GlobalQuoteResponse, Stock, StockGetParams, SymbolSearchResponse} from 'typings/stock';
+import {Cache} from "typings/cache";
 
-type StockGetParams = {
-    company: string;
-};
+interface B {
+    aquireStock(company: string): Promise<Stock>;
+}
 
-type GlobalQuoteResponse = {
-    'Global Quote': {
-        '05. price': string;
+class ConcreteB implements B {
+
+    async aquireStock(company: string): Promise<Stock> {
+        return {name: '123', value: 123};
     }
 }
 
-type SymbolSearchMatchEntry = {
-    '2. name': string
-}
+class CacheConcreteB implements B {
+    constructor(props) {
+        super(props);
 
-type SymbolSearchResponse = {
-    bestMatches: Array<SymbolSearchMatchEntry>
-}
+    }
 
-type StockApiDetails = {
-    url: string;
-    method: 'GET';
-    key: string;
-};
+
+}
 
 export default class StockService {
-    private static stockApiDetails: StockApiDetails = {
-        url: 'https://www.alphavantage.co/query',
-        method: 'GET',
-        key: 'YGFDT2GZI12IJHRV'
-    };
-
     private static cacheOptions = {
         max: 500,
         maxAge: 1000 * 60 * 10,
     };
 
-    private cache: LRUCache<string, Stock>;
+    private cache: Cache<string, Stock>;
 
-    constructor() {
-        this.cache = new LRUCache<string, Stock>(StockService.cacheOptions);
+    constructor(cache?: Cache<string, Stock>) {
+        if (cache) {
+            this.cache = cache;
+        } else {
+            this.cache = new LRUCache<string, Stock>(StockService.cacheOptions);
+        }
     }
 
     async get(params: StockGetParams): Promise<Stock> | never {
@@ -54,35 +48,65 @@ export default class StockService {
             company: yup.string().required().matches(/^[A-Z]+$/)
         });
 
-        validator.validateSync(params, {strict: true});
+        try {
+            validator.validateSync(params, {strict: true});
+        } catch (e) {
+            throw new ValidationError(e.message);
+        }
 
         if (!this.cache.has(params.company)) {
-            const globalQuoteRes: GlobalQuoteResponse = (await axios(StockService.stockApiDetails.url, {
-                method: StockService.stockApiDetails.method,
-                params: {
-                    function: 'GLOBAL_QUOTE',
-                    symbol: params.company,
-                    apikey: StockService.stockApiDetails.key
-                }
-            })).data;
-            const price = Number(globalQuoteRes['Global Quote']['05. price']);
-
-            const symbolSearchRes: SymbolSearchResponse = (await axios(StockService.stockApiDetails.url, {
-                method: StockService.stockApiDetails.method,
-                params: {
-                    function: 'SYMBOL_SEARCH',
-                    keywords: params.company,
-                    apikey: StockService.stockApiDetails.key
-                }
-            })).data;
-            const name = symbolSearchRes.bestMatches[0]['2. name'];
-
-            this.cache.set(params.company, {
-                price, name
+            const stockUrl = config.stockApi.url + config.stockApi.path;
+            const priceValidator = yup.object().shape({
+                'Global Quote': yup.object().shape({
+                    '05. price': yup.string().required().matches(/^[0-9]*\.[0-9]+$/)
+                }).required()
             });
+            const nameValidator = yup.object().shape({
+                bestMatches: yup.array().of(yup.object().shape({
+                    '2. name': yup.string().required()
+                })).required()
+            });
+
+            try {
+                const price = await this._getPrice(stockUrl, params.company, priceValidator);
+                const name = await this._getName(stockUrl, params.company, nameValidator);
+                this.cache.set(params.company, {
+                    price, name
+                });
+            } catch (e) {
+                throw new NotFoundError(`${params.company} not found`);
+            }
         }
 
         return this.cache.get(params.company);
+    }
+
+    async _getPrice(stockUrl: string, company: string, validator: yup.ObjectSchema): Promise<number> | never {
+        const globalQuoteRes: GlobalQuoteResponse = (await axios.get(stockUrl, {
+            params: {
+                function: 'GLOBAL_QUOTE',
+                symbol: company,
+                apikey: config.stockApi.key
+            }
+        })).data;
+
+        validator.validateSync(globalQuoteRes, {strict: true});
+
+        return Number(globalQuoteRes['Global Quote']['05. price']);
+    }
+
+    async _getName(stockUrl: string, company: string, validator: yup.ObjectSchema): Promise<string> | never {
+        const symbolSearchRes: SymbolSearchResponse = (await axios.get(stockUrl, {
+            params: {
+                function: 'SYMBOL_SEARCH',
+                keywords: company,
+                apikey: config.stockApi.key
+            }
+        })).data;
+
+        validator.validateSync(symbolSearchRes, {strict: true});
+
+        return symbolSearchRes.bestMatches[0]['2. name'];
     }
 
 }
