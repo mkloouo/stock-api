@@ -1,5 +1,5 @@
 import {Request, Response, Router} from 'express';
-import StockService from "../service/stock";
+import StockService from "../services/stock";
 
 /**
  * Prices routers entity
@@ -8,7 +8,7 @@ export default class PricesRouter {
 
     /**
      * Creates prices API router and returns it.
-     * @param {StockService} stockService stock service
+     * @param {StockService} stockService stock services
      * @returns {Router} prices API router
      */
     static pricesApi(stockService: StockService): Router {

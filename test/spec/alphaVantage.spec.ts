@@ -1,6 +1,6 @@
 import nock from 'nock';
 
-import AlphaVantageService from '../../src/service/alphaVantage';
+import AlphaVantageService from '../../src/services/alphaVantage.service';
 
 const
   capitalLettersRx = /^[A-Z]+$/,
@@ -40,9 +40,7 @@ describe('AlphaVantageService', () => {
       async () => {
         scope = interceptor.reply(200, {});
 
-        await alphaVantageService.getCurrentStockValue({
-          company: 'WIX',
-        });
+        await alphaVantageService.getCurrentStockValue('WIX');
 
         expect(scope.isDone()).toBeTruthy();
       });
@@ -55,9 +53,7 @@ describe('AlphaVantageService', () => {
         },
       });
 
-      const result = await alphaVantageService.getCurrentStockValue({
-        company: 'WIX',
-      });
+      const result = await alphaVantageService.getCurrentStockValue('WIX');
 
       expect(result).toEqual(Number(testPrice));
     });
@@ -66,9 +62,7 @@ describe('AlphaVantageService', () => {
       async () => {
         scope = interceptor.reply(200, {});
 
-        const result = await alphaVantageService.getCurrentStockValue({
-          company: 'WIX',
-        });
+        const result = await alphaVantageService.getCurrentStockValue('WIX');
 
         expect(result).toBeUndefined();
       });
@@ -79,9 +73,7 @@ describe('AlphaVantageService', () => {
           'Global Quote': {},
         });
 
-        const result = await alphaVantageService.getCurrentStockValue({
-          company: 'WIX',
-        });
+        const result = await alphaVantageService.getCurrentStockValue('WIX');
 
         expect(result).toBeUndefined();
       });
@@ -102,9 +94,7 @@ describe('AlphaVantageService', () => {
       'with specified company and api key', async () => {
       scope = interceptor.reply(200, {});
 
-      await alphaVantageService.getFullCompanyName({
-        company: 'WIX',
-      });
+      await alphaVantageService.getFullCompanyName('WIX');
 
       expect(scope.isDone()).toBeTruthy();
     });
@@ -118,9 +108,7 @@ describe('AlphaVantageService', () => {
           }],
       });
 
-      const result = await alphaVantageService.getFullCompanyName({
-        company: 'WIX',
-      });
+      const result = await alphaVantageService.getFullCompanyName('WIX');
 
       expect(result).toEqual(testName);
     });
@@ -128,9 +116,7 @@ describe('AlphaVantageService', () => {
     it('should return undefined when no best matches field', async () => {
       scope = interceptor.reply(200, {});
 
-      const result = await alphaVantageService.getFullCompanyName({
-        company: 'WIX',
-      });
+      const result = await alphaVantageService.getFullCompanyName('WIX');
 
       expect(result).toBeUndefined();
     });
@@ -141,9 +127,7 @@ describe('AlphaVantageService', () => {
           bestMatches: [],
         });
 
-        const result = await alphaVantageService.getFullCompanyName({
-          company: 'WIX',
-        });
+        const result = await alphaVantageService.getFullCompanyName('WIX');
 
         expect(result).toBeUndefined();
       });
@@ -155,9 +139,7 @@ describe('AlphaVantageService', () => {
           bestMatches: [{}],
         });
 
-        const result = await alphaVantageService.getFullCompanyName({
-          company: 'WIX',
-        });
+        const result = await alphaVantageService.getFullCompanyName('WIX');
 
         expect(result).toBeUndefined();
       });

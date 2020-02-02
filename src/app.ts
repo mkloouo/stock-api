@@ -1,11 +1,11 @@
 import express, {Express, Request, Response} from 'express';
 
 import config from './config';
-import PricesRouter from './routes/prices';
-import StockService from "./service/stock";
+import PricesRouter from './routers/prices.router';
+import StockService from "./services/stock";
 
 /**
- * Stock Application entity
+ * StockInterface Application entity
  */
 export default class StockApplication {
     public readonly hostname: string;

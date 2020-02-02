@@ -6,16 +6,10 @@ type AlphaVantageConfig = {
   apikey: string;
 };
 
-type CurrentStockValueParams = {
-  company: string;
-};
-
-type FullCompanyNameParams = CurrentStockValueParams;
-
 /**
- * Alpha Vantage API service
+ * Alpha Vantage API services
  */
-export default class AlphaVantageService {
+export default class AlphaVantageService implements StockApi {
 
   /**
    * Constructs AlphaVantageService instance
@@ -26,15 +20,15 @@ export default class AlphaVantageService {
 
   /**
    * Retrieves current stock value for a company specified in params
-   * @param params params
+   * @param company string
    * @returns to be resolved with current stock value or undefined
    */
-  async getCurrentStockValue(params: CurrentStockValueParams):
+  async getCurrentStockValue(company: string):
     Promise<number | undefined> {
     const res = await axios.get(this.config.url + this.config.path, {
       params: {
         function: 'GLOBAL_QUOTE',
-        symbol: params.company,
+        symbol: company,
         apikey: this.config.apikey,
       },
     });
@@ -45,15 +39,15 @@ export default class AlphaVantageService {
 
   /**
    * Retrieves full company name by the name specified in params
-   * @param params params
+   * @param company string
    * @returns to be resolved with full name or undefined
    */
-  async getFullCompanyName(params: FullCompanyNameParams):
+  async getFullCompanyName(company: string):
     Promise<string | undefined> {
     const res = await axios.get(this.config.url + this.config.path, {
       params: {
         function: 'SYMBOL_SEARCH',
-        keywords: params.company,
+        keywords: company,
         apikey: this.config.apikey,
       },
     });
