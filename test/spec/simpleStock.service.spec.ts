@@ -1,7 +1,9 @@
 import sinon, {SinonSandbox} from 'sinon';
+import StockApiMock from '../mocks/stockApi.mock';
 
 import SimpleStockService from '../../src/services/simpleStock.service';
-import StockApiMock from '../mocks/stockApi.mock';
+import {StockApi} from '../../src/interfaces/stockApi.interface';
+import {Stock} from '../../src/interfaces/stock.interface';
 
 let
   stockApiMock: StockApi,
@@ -21,7 +23,7 @@ describe('SimpleStockService', () => {
     sandbox.restore();
   });
 
-  describe('getCurrentStock', function() {
+  describe('getCurrentStock', () => {
 
     let expectedStock: Stock;
 

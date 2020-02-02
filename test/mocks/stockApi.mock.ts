@@ -1,3 +1,5 @@
+import {StockApi} from '../../src/interfaces/stockApi.interface';
+
 export default class StockApiMock implements StockApi {
 
   getCurrentStockValue(company: string): Promise<number | undefined> {

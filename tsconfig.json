@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "module": "commonjs",
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
@@ -18,8 +20,7 @@
     }
   },
   "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": []
 }

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {StockApi} from '../interfaces/stockApi.interface';
 
 type AlphaVantageConfig = {
   url: string;

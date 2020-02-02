@@ -1,3 +1,7 @@
+import {StockApi} from '../interfaces/stockApi.interface';
+import {StockService} from '../interfaces/stockService.interface';
+import {Stock} from '../interfaces/stock.interface';
+
 export default class SimpleStockService implements StockService {
 
   constructor(private stockApi: StockApi) {}
