@@ -1,10 +1,12 @@
-class SimpleStockService implements StockServiceInterface {
+export default class SimpleStockService implements StockService {
 
-  constructor() {
-  }
+  constructor(private stockApi: StockApi) {}
 
-  getCurrentStock(company: string): StockInterface {
-    return undefined;
+  async getCurrentStock(company: string): Promise<Stock | undefined> {
+    const value = await this.stockApi.getCurrentStockValue(company);
+    const name = await this.stockApi.getFullCompanyName(company);
+
+    return value && name ? {value, name} : undefined;
   }
 
 }

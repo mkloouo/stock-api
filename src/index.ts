@@ -1,5 +1,7 @@
-import Application from "./app";
+import app from './app';
+import config from './config';
 
-new Application().start((hostname: string, port: number) => {
-    console.log(`express app started listening on ${hostname}:${port}`);
-});
+app.listen(config.app.port, config.app.hostname, () =>
+  console.log('express app started listening on ' + config.app.port + ':' +
+    config.app.hostname),
+);

@@ -1,4 +1,4 @@
-interface StockInterface {
+interface Stock {
   name: string;
   value: number;
 }

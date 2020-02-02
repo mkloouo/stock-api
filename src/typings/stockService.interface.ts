@@ -1,3 +1,3 @@
-interface StockServiceInterface {
-  getCurrentStock(company: string): StockInterface;
+interface StockService {
+  getCurrentStock(company: string): Promise<Stock | undefined>;
 }
